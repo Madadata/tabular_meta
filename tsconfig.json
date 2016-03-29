@@ -1,0 +1,18 @@
+{
+  "version": "1.8.0",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "lib",
+    "rootDir": "src",
+    "sourceMap": true,
+    "declaration": true
+  },
+  "files": [
+    "./src/index.ts",
+    "./src/models.ts",
+    "./typings/main.d.ts"
+  ]
+}
