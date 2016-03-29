@@ -1,7 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
 /// <reference path="../src/models.ts" />
 
-import * as _ from 'lodash';
+import * as _ from "lodash";
 import {
   ColumnType,
   ColumnMeta,
@@ -9,7 +9,7 @@ import {
   NumberColumnMeta,
   DateTimeColumnMeta,
   ColumnMetaCollection
-} from './models';
+} from "./models";
 
 export interface MetaReducer<T extends ColumnMeta<any>> {
   (acc: T, cell: string): T | boolean;

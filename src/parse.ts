@@ -6,13 +6,13 @@ import {
   ColumnMeta,
   ColumnType,
   ColumnMetaCollection,
-} from './models';
+} from "./models";
 import {
   MetaAndReducer,
   MetaReducer,
   metaInit
-} from './reducers';
-import * as _ from 'lodash';
+} from "./reducers";
+import * as _ from "lodash";
 
 type MetaOptions = MetaAndReducer<any>[];
 
@@ -84,7 +84,7 @@ export function parseTableMeta(data: string[][]): TableMeta {
     return {
       headers: headers,
       columns: parsed.metaAndReducers.map(collapsMeta)
-    }
+    };
   } else {
     return null;
   }
