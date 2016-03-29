@@ -1,7 +1,7 @@
 /// <reference path="../typings/main.d.ts" />
-import * as moment from "moment";
+import { Moment } from "moment";
 
-export type ValueType = number | string | moment.Moment;
+export type ValueType = number | string | Moment;
 
 export type ColumnType = "string" | "number" | "dateTime";
 
@@ -10,7 +10,7 @@ export interface ColumnMeta<T extends ValueType> {
   values: T[];
 }
 
-export interface DateTimeColumnMeta extends ColumnMeta<moment.Moment> {
+export interface DateTimeColumnMeta extends ColumnMeta<Moment> {
   hasDate: boolean;
   hasTime: boolean;
 }
