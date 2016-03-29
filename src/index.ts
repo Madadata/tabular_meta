@@ -1,3 +1,2 @@
-/// <reference path="../typings/main.d.ts" />
-
-import * as models from './models';
+export { ColumnMeta, TableMeta } from './models';
+export { parseTableMeta } from './parse';

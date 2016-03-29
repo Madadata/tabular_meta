@@ -1,11 +1,11 @@
-import { RowType } from '../lib/models';
+import { ColumnType } from '../lib/models';
 import chai from 'chai';
 chai.should();
 
 describe("models", () => {
 
   it('should work', () => {
-    console.log(RowType);
+    ColumnType.should.not.be.empty;
   });
 
 });
