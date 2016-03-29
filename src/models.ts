@@ -1,16 +1,18 @@
 /// <reference path="../typings/main.d.ts" />
 import { Moment } from 'moment';
 
+export type ValueType = number | string | Moment;
+
 export enum ColumnType {
   DateTime,
   String,
   Number
 }
 
-export interface ColumnMeta<T> {
+export interface ColumnMeta<T extends ValueType> {
   type: ColumnType;
   header?: string;
-  values: T[]
+  values: T[];
 }
 
 export interface DateTimeColumnMeta extends ColumnMeta<Moment> {
@@ -28,6 +30,12 @@ export interface NumberColumnMeta extends ColumnMeta<number> {
   maxValue: number;
 }
 
+export interface ColumnMetaCollection {
+  stringMeta?: StringColumnMeta;
+  dateTimeMeta?: DateTimeColumnMeta;
+  numberMeta?: NumberColumnMeta;
+}
+
 export interface TableMeta {
-  columns: ColumnMeta<any>[];
+  columns: ColumnMeta<ValueType>[];
 }
