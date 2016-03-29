@@ -15,16 +15,17 @@ import {
 } from './reducers';
 import * as _ from 'lodash';
 
+type MetaOptions = MetaAndReducer<any>[];
+
 interface ParseAcc {
   headers: String[];
-  metaAndReducers: MetaAndReducer<any>[][];
+  metaAndReducers: MetaOptions[];
 }
 
-function reduceCell(metaAndReducers: MetaAndReducer<any>[], cell: string): MetaAndReducer<any>[] | boolean {
-  const retVal = _(metaAndReducers).map(metaAndReducer => {
+function reduceCell(metaAndReducers: MetaOptions, cell: string): MetaOptions | boolean {
+  const retVal: MetaOptions = _(metaAndReducers).map(metaAndReducer => {
     const meta = metaAndReducer.meta;
     const reducer = metaAndReducer.reducer;
-    console.log(meta, reducer);
     const newMeta = reducer(meta, cell);
     if (newMeta) {
       return {
@@ -35,12 +36,13 @@ function reduceCell(metaAndReducers: MetaAndReducer<any>[], cell: string): MetaA
       return null;
     }
   })
-  .filter(_.identity)
-  .value();
+    .filter(_.identity)
+    .value();
   if (_.isEmpty(retVal)) {
     return false;
+  } else {
+    return retVal;
   }
-  return retVal;
 }
 
 function reduceRow(acc: ParseAcc, row: string[], index: number): ParseAcc | boolean {
@@ -50,10 +52,20 @@ function reduceRow(acc: ParseAcc, row: string[], index: number): ParseAcc | bool
   const newMeta = _.zipWith(acc.metaAndReducers, row, reduceCell);
   if (_.every(newMeta)) {
     // NOTE in-place
-    return _.merge(acc, { metaAndReducers: newMeta });
+    const result = <MetaOptions[]>newMeta;
+    return {
+      headers: acc.headers,
+      metaAndReducers: result
+    };
   } else {
     return false;
   }
+}
+
+function collapsMeta(metaAndReducers: MetaOptions): ColumnMeta<any> {
+  return metaAndReducers
+    .map(x => x.meta)
+    .reduce(_.merge, {});
 }
 
 export function parseTableMeta(data: string[][]): TableMeta {
@@ -68,7 +80,13 @@ export function parseTableMeta(data: string[][]): TableMeta {
     metaAndReducers: headers.map(i => metaInit())
   };
   const result = _.reduce(rest, reduceRow, init);
-  return {
-    columns: []
-  };
+  if (result) {
+    const parsed: ParseAcc = <ParseAcc>result;
+    return {
+      headers: headers,
+      columns: parsed.metaAndReducers.map(collapsMeta)
+    }
+  } else {
+    return null;
+  }
 }

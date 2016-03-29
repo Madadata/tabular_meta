@@ -3,11 +3,7 @@ import { Moment } from 'moment';
 
 export type ValueType = number | string | Moment;
 
-export enum ColumnType {
-  DateTime,
-  String,
-  Number
-}
+export type ColumnType = "string" | "number" | "dateTime";
 
 export interface ColumnMeta<T extends ValueType> {
   type: ColumnType;
@@ -32,5 +28,6 @@ export interface NumberColumnMeta extends ColumnMeta<number> {
 export type ColumnMetaCollection = ColumnMeta<ValueType>[];
 
 export interface TableMeta {
+  headers: string[];
   columns: ColumnMetaCollection;
 }

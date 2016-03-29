@@ -20,31 +20,31 @@ export type MetaAndReducer<T extends ColumnMeta<T>> = {
   reducer: MetaReducer<T>;
 }
 
-const stringReducerInitialValue: StringColumnMeta = Object.freeze({
-  type: ColumnType.String,
+const stringReducerInitialValue: StringColumnMeta = {
+  type: "string",
   maxLength: Number.NEGATIVE_INFINITY,
   minLength: Number.POSITIVE_INFINITY,
   values: []
-});
+};
 
 export let stringReducer: MetaReducer<StringColumnMeta>;
 stringReducer = function(acc: StringColumnMeta, cell: string) {
   // NOTE: in-place
   acc.values.push(cell);
   return {
-    type: ColumnType.String,
+    type: acc.type,
     maxLength: Math.max(cell.length, acc.maxLength),
     minLength: Math.min(cell.length, acc.minLength),
     values: acc.values
   };
 };
 
-const numberReducerIntialValue: NumberColumnMeta = Object.freeze({
-  type: ColumnType.Number,
+const numberReducerIntialValue: NumberColumnMeta = {
+  type: "number",
   maxValue: Number.NEGATIVE_INFINITY,
   minValue: Number.POSITIVE_INFINITY,
   values: []
-});
+};
 
 export let numberReducer: MetaReducer<NumberColumnMeta>;
 numberReducer = function(acc: NumberColumnMeta, cell: string) {
@@ -53,34 +53,43 @@ numberReducer = function(acc: NumberColumnMeta, cell: string) {
     // NOTE: in-place
     acc.values.push(val);
     return {
-      type: ColumnType.Number,
+      type: acc.type,
       maxValue: Math.max(val, acc.maxValue),
       minValue: Math.min(val, acc.minValue),
       values: acc.values
     };
   } else {
-    console.warn('number cell', cell);
     return false;
   }
 };
 
-const dateTimeReducerIntialValue: DateTimeColumnMeta = Object.freeze({
-  type: ColumnType.DateTime,
+const dateTimeReducerIntialValue: DateTimeColumnMeta = {
+  type: "dateTime",
   hasDate: false,
   hasTime: false,
   values: []
-});
+};
 
 export let dateTimeReducer: MetaReducer<DateTimeColumnMeta>;
 dateTimeReducer = function(acc: DateTimeColumnMeta, cell: string) {
-  console.warn('datetime cell', cell);
   return false;
 };
 
 export function metaInit(): MetaAndReducer<any>[] {
+  // NOTE that this order is important, the most safe-bet ones come first and will
+  // be override by subsequence ones
   return _.cloneDeep([
-    { meta: stringReducerInitialValue, reducer: stringReducer },
-    { meta: dateTimeReducerIntialValue, reducer: dateTimeReducer },
-    { meta: numberReducerIntialValue, reducer: numberReducer },
+    {
+      meta: stringReducerInitialValue,
+      reducer: stringReducer
+    },
+    {
+      meta: numberReducerIntialValue,
+      reducer: numberReducer
+    },
+    {
+      meta: dateTimeReducerIntialValue,
+      reducer: dateTimeReducer
+    },
   ]);
 };
