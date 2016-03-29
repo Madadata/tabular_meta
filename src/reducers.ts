@@ -1,28 +1,34 @@
 /// <reference path="../typings/main.d.ts" />
 /// <reference path="../src/models.ts" />
 
-import { Moment } from 'moment';
+import * as _ from 'lodash';
 import {
   ColumnType,
   ColumnMeta,
   StringColumnMeta,
   NumberColumnMeta,
-  DateTimeColumnMeta, ColumnMetaCollection
+  DateTimeColumnMeta,
+  ColumnMetaCollection
 } from './models';
 
 export interface MetaReducer<T extends ColumnMeta<any>> {
-  (cell: string, acc: T): T | boolean;
+  (acc: T, cell: string): T | boolean;
 }
 
-const stringReducerInitialValue: StringColumnMeta = {
+export type MetaAndReducer<T extends ColumnMeta<T>> = {
+  meta: T;
+  reducer: MetaReducer<T>;
+}
+
+const stringReducerInitialValue: StringColumnMeta = Object.freeze({
   type: ColumnType.String,
   maxLength: Number.NEGATIVE_INFINITY,
   minLength: Number.POSITIVE_INFINITY,
   values: []
-};
+});
 
 export let stringReducer: MetaReducer<StringColumnMeta>;
-stringReducer = function(cell: string, acc: StringColumnMeta) {
+stringReducer = function(acc: StringColumnMeta, cell: string) {
   // NOTE: in-place
   acc.values.push(cell);
   return {
@@ -33,15 +39,15 @@ stringReducer = function(cell: string, acc: StringColumnMeta) {
   };
 };
 
-const numberReducerIntialValue: NumberColumnMeta = {
+const numberReducerIntialValue: NumberColumnMeta = Object.freeze({
   type: ColumnType.Number,
   maxValue: Number.NEGATIVE_INFINITY,
   minValue: Number.POSITIVE_INFINITY,
   values: []
-};
+});
 
 export let numberReducer: MetaReducer<NumberColumnMeta>;
-numberReducer = function(cell: string, acc: NumberColumnMeta) {
+numberReducer = function(acc: NumberColumnMeta, cell: string) {
   const val = parseFloat(cell);
   if (isFinite(val)) {
     // NOTE: in-place
@@ -53,24 +59,28 @@ numberReducer = function(cell: string, acc: NumberColumnMeta) {
       values: acc.values
     };
   } else {
+    console.warn('number cell', cell);
     return false;
   }
 };
 
-const dateTimeReducerIntialValue: DateTimeColumnMeta = {
+const dateTimeReducerIntialValue: DateTimeColumnMeta = Object.freeze({
   type: ColumnType.DateTime,
   hasDate: false,
   hasTime: false,
   values: []
-};
+});
 
 export let dateTimeReducer: MetaReducer<DateTimeColumnMeta>;
-dateTimeReducer = function(cell: string, acc: DateTimeColumnMeta) {
+dateTimeReducer = function(acc: DateTimeColumnMeta, cell: string) {
+  console.warn('datetime cell', cell);
   return false;
 };
 
-export const metaInit: ColumnMetaCollection = {
-  stringMeta: stringReducerInitialValue,
-  numberMeta: numberReducerIntialValue,
-  dateTimeMeta: dateTimeReducerIntialValue
+export function metaInit(): MetaAndReducer<any>[] {
+  return _.cloneDeep([
+    { meta: stringReducerInitialValue, reducer: stringReducer },
+    { meta: dateTimeReducerIntialValue, reducer: dateTimeReducer },
+    { meta: numberReducerIntialValue, reducer: numberReducer },
+  ]);
 };

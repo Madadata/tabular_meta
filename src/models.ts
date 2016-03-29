@@ -11,7 +11,6 @@ export enum ColumnType {
 
 export interface ColumnMeta<T extends ValueType> {
   type: ColumnType;
-  header?: string;
   values: T[];
 }
 
@@ -30,12 +29,8 @@ export interface NumberColumnMeta extends ColumnMeta<number> {
   maxValue: number;
 }
 
-export interface ColumnMetaCollection {
-  stringMeta?: StringColumnMeta;
-  dateTimeMeta?: DateTimeColumnMeta;
-  numberMeta?: NumberColumnMeta;
-}
+export type ColumnMetaCollection = ColumnMeta<ValueType>[];
 
 export interface TableMeta {
-  columns: ColumnMeta<ValueType>[];
+  columns: ColumnMetaCollection;
 }
