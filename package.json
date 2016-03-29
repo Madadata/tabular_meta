@@ -9,6 +9,9 @@
     "watch": "concurrently -k 'npm run build -- --watch' 'npm run test -- --watch'",
     "test": "mocha"
   },
+  "files": [
+    "lib/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Madadata/tabular_meta.git"

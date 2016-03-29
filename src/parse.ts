@@ -4,7 +4,6 @@
 import {
   TableMeta,
   ColumnMeta,
-  ValueType,
   ColumnType,
   ColumnMetaCollection,
 } from './models';
