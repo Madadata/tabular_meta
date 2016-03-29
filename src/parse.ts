@@ -10,11 +10,10 @@ import {
 import {
   MetaAndReducer,
   MetaReducer,
+  MetaOptions,
   metaInit
 } from "./reducers";
 import * as _ from "lodash";
-
-type MetaOptions = MetaAndReducer<any>[];
 
 interface ParseAcc {
   headers: String[];

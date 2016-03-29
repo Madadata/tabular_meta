@@ -1,18 +1,26 @@
 /// <reference path="../typings/main.d.ts" />
-import { Moment } from "moment";
 
-export type ValueType = number | string | Moment;
+import * as moment from "moment";
 
-export type ColumnType = "string" | "number" | "dateTime";
+export type ValueType = number | string | moment.Moment;
+
+export type ColumnType = "string" | "number" | "moment";
 
 export interface ColumnMeta<T extends ValueType> {
   type: ColumnType;
   values: T[];
 }
 
-export interface DateTimeColumnMeta extends ColumnMeta<Moment> {
-  hasDate: boolean;
-  hasTime: boolean;
+export const DefaultDateTimeFormats = [
+  moment.ISO_8601,
+  "YYYY-MM-DD",
+  "DD-MM-YYYY",
+  "MM-DD-YYYY",
+  // Note for formats with time, only ISO_8601 is supported for now
+];
+
+export interface DateTimeColumnMeta extends ColumnMeta<moment.Moment> {
+  dateTimeFormat?: string;
 }
 
 export interface StringColumnMeta extends ColumnMeta<string> {
